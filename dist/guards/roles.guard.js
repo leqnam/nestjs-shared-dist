@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var RolesGuard_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RolesGuard = void 0;
@@ -35,7 +38,13 @@ let RolesGuard = RolesGuard_1 = class RolesGuard {
             this.logger.warn(`User ${user.id || 'unknown'} has no roles array`);
             throw new common_1.ForbiddenException('User roles not available');
         }
-        const hasAnyRole = requiredRoles.some(role => user.roles.includes(role));
+        const isSystemAdmin = user.roles.includes('system-admin');
+        if (isSystemAdmin) {
+            this.logger.debug(`User ${user.id || 'unknown'} has system-admin role, bypassing role checks`);
+            return true;
+        }
+        const hasAnyRole = (user.permissions && user.permissions.length > 0) ||
+            requiredRoles.some(role => user.roles.includes(role));
         if (!hasAnyRole) {
             this.logger.warn(`User ${user.id || 'unknown'} missing required roles. Required: ${requiredRoles.join(', ')}, Has: ${user.roles.join(', ')}`);
             throw new common_1.ForbiddenException(`Insufficient roles. Required: ${requiredRoles.join(', ')}`);
@@ -47,5 +56,6 @@ let RolesGuard = RolesGuard_1 = class RolesGuard {
 exports.RolesGuard = RolesGuard;
 exports.RolesGuard = RolesGuard = RolesGuard_1 = __decorate([
     (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)(core_1.Reflector.name)),
     __metadata("design:paramtypes", [core_1.Reflector])
 ], RolesGuard);

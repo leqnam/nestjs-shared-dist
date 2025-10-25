@@ -33,6 +33,7 @@ __decorate([
         comment: 'Ngày giờ khởi tạo',
     }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", Date)
 ], AbstractEntity.prototype, "createDate", void 0);
 __decorate([
@@ -43,6 +44,7 @@ __decorate([
         comment: 'Ngày bắt đầu có hiệu lực',
     }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Expose)(),
     (0, class_transformer_1.Type)(() => Date),
     __metadata("design:type", Date)
 ], AbstractEntity.prototype, "effectDate", void 0);
@@ -54,6 +56,7 @@ __decorate([
         comment: 'Ngày hết hiệu lực',
     }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Expose)(),
     (0, class_transformer_1.Type)(() => Date),
     (0, class_transformer_1.Transform)(date => (0, helper_1.transformEndOfDate)(date.value)),
     __metadata("design:type", Date)
@@ -67,6 +70,7 @@ __decorate([
         comment: 'Ngày giờ cập nhật',
     }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", Date)
 ], AbstractEntity.prototype, "dateLastMaint", void 0);
 __decorate([
@@ -76,6 +80,7 @@ __decorate([
         nullable: true,
         comment: "Special column that is automatically set to the entity's version (incremental number) each time you call save from entity manager or repository.",
     }),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", Number)
 ], AbstractEntity.prototype, "version", void 0);
 __decorate([
@@ -85,6 +90,7 @@ __decorate([
         nullable: true,
         comment: 'Được thêm bởi',
     }),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", String)
 ], AbstractEntity.prototype, "addedBy", void 0);
 __decorate([
@@ -94,13 +100,16 @@ __decorate([
         nullable: true,
         comment: 'Được chỉnh sửa bởi',
     }),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", String)
 ], AbstractEntity.prototype, "editedBy", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', name: 'approvedBy', nullable: true }),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", String)
 ], AbstractEntity.prototype, "approvedBy", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', name: 'note', nullable: true }),
+    (0, class_transformer_1.Expose)(),
     __metadata("design:type", String)
 ], AbstractEntity.prototype, "note", void 0);

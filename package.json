@@ -1,6 +1,6 @@
 {
   "name": "@nready/nestjs-shared",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "NestJs common Lib for NestJs project",
   "author": "Le Quoc Nam <leqnam@live.com (nam@nready.net)>",
   "license": "MIT",

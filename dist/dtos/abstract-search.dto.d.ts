@@ -8,6 +8,8 @@ export declare class AbstractSearchDto<TEntity> {
     get take(): number;
     set take(value: number);
     orderBy?: FindOptionsOrder<TEntity>;
+    orderByField?: string;
+    orderByDirection?: 'ASC' | 'DESC';
     exact?: boolean;
     constructor();
 }

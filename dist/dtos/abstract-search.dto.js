@@ -59,6 +59,20 @@ __decorate([
 ], AbstractSearchDto.prototype, "orderBy", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AbstractSearchDto.prototype, "orderByField", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsIn)(['ASC', 'DESC', 'asc', 'desc'], {
+        message: 'orderByDirection must be ASC or DESC',
+    }),
+    (0, class_transformer_1.Transform)(({ value }) => value?.toUpperCase()),
+    __metadata("design:type", String)
+], AbstractSearchDto.prototype, "orderByDirection", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Transform)(({ value }) => value === 'true'),
     __metadata("design:type", Boolean)
 ], AbstractSearchDto.prototype, "exact", void 0);

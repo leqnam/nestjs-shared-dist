@@ -10,66 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractSearchService = void 0;
-const typeorm_1 = require("typeorm");
-const page_meta_dto_1 = require("../dtos/page-meta.dto");
-const search_result_dto_1 = require("../dtos/search-result.dto");
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("typeorm");
+const helper_1 = require("../helper");
 let AbstractSearchService = class AbstractSearchService {
     constructor(repo) {
         this.repo = repo;
-        this.queryBuilder = ((model) => {
-            const queryable = {};
-            const excludeProperties = ['_page', '_take', '_orderBy', '_exact', '_q'];
-            Object.keys(model).forEach(key => {
-                const value = model[key];
-                if (excludeProperties.includes(key) ||
-                    value === null ||
-                    value === undefined ||
-                    value === '') {
-                    return;
-                }
-                if (typeof value === 'string') {
-                    if (model.exact) {
-                        queryable[key] = value;
-                    }
-                    else {
-                        queryable[key] = (0, typeorm_1.ILike)(`%${value}%`);
-                    }
-                }
-                else if (typeof value === 'number' || typeof value === 'boolean') {
-                    queryable[key] = value;
-                }
-                else if (value instanceof Date) {
-                    queryable[key] = value;
-                }
-            });
-            if (model.q && Object.keys(queryable).length === 0) {
-                if (model.exact) {
-                    queryable.fileName = model.q;
-                }
-                else {
-                    queryable.fileName = (0, typeorm_1.ILike)(`%${model.q}%`);
-                }
-            }
-            return queryable;
-        });
+    }
+    queryBuilder(model) {
+        return (0, helper_1.buildQuery)(model);
     }
     async paginate(model) {
-        const itemCount = await this.repo.countBy(this.queryBuilder(model));
-        const data = await this.repo.find({
-            where: this.queryBuilder(model),
-            skip: (model.page - 1) * model.take,
-            take: model.take,
-            order: model.orderBy || { dateLastMaint: 'DESC' },
-        });
-        return new search_result_dto_1.SearchResultDto(new page_meta_dto_1.PageMetaDto({
-            pageOptionsDto: {
-                take: model.take,
-                page: model.page,
-                skip: (model.page - 1) * model.take,
-            },
-            itemCount,
-        }), data);
+        return (0, helper_1.paginateRepository)(this.repo, model);
     }
 };
 exports.AbstractSearchService = AbstractSearchService;

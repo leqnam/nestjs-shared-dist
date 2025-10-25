@@ -10,9 +10,14 @@ exports.hasCommonItemInArrays = hasCommonItemInArrays;
 exports.convertToAscii = convertToAscii;
 exports.isFutureDate = isFutureDate;
 exports.isActiveByDate = isActiveByDate;
+exports.buildQuery = buildQuery;
+exports.paginateRepository = paginateRepository;
 const fs_1 = require("fs");
 const swagger_1 = require("@nestjs/swagger");
 const constants_1 = require("./constants");
+const ILike_1 = require("typeorm/find-options/operator/ILike");
+const search_result_dto_1 = require("./dtos/search-result.dto");
+const page_meta_dto_1 = require("./dtos/page-meta.dto");
 function setupSwagger(app) {
     const options = new swagger_1.DocumentBuilder()
         .setTitle('API')
@@ -117,4 +122,63 @@ function isActiveByDate(effectDate, inactiveDate) {
         effectDate < new Date() &&
         ((0, exports.isNullable)(inactiveDate) ||
             inactiveDate > new Date());
+}
+function buildQuery(model) {
+    const queryable = {};
+    const excludeProperties = ['_page', '_take', '_orderBy', '_exact', '_q', 'orderBy', 'orderByDirection', 'orderByField'];
+    Object.keys(model).forEach((key) => {
+        const value = model[key];
+        if (excludeProperties.includes(key) ||
+            value === null ||
+            value === undefined ||
+            value === '') {
+            return;
+        }
+        if (typeof value === 'string') {
+            queryable[key] = model.exact ? value : (0, ILike_1.ILike)(`%${value}%`);
+        }
+        else if (typeof value === 'number' || typeof value === 'boolean') {
+            queryable[key] = value;
+        }
+        else if (value instanceof Date) {
+            queryable[key] = value;
+        }
+    });
+    if (model.q && Object.keys(queryable).length === 0) {
+        queryable.fileName = model.exact
+            ? model.q
+            : (0, ILike_1.ILike)(`%${model.q}%`);
+    }
+    return queryable;
+}
+async function paginateRepository(repo, model, defaultOrder) {
+    const where = buildQuery(model);
+    const itemCount = await repo.countBy(where);
+    let order;
+    if (model.orderBy) {
+        order = model.orderBy;
+    }
+    else if (model.orderByField && model.orderByDirection) {
+        order = { [model.orderByField]: model.orderByDirection };
+    }
+    else if (model.orderByField) {
+        order = { [model.orderByField]: 'ASC' };
+    }
+    else {
+        order = defaultOrder ?? { dateLastMaint: 'DESC' };
+    }
+    const data = await repo.find({
+        where: where,
+        skip: (model.page - 1) * model.take,
+        take: model.take,
+        order: order,
+    });
+    return new search_result_dto_1.SearchResultDto(new page_meta_dto_1.PageMetaDto({
+        pageOptionsDto: {
+            take: model.take,
+            page: model.page,
+            skip: (model.page - 1) * model.take,
+        },
+        itemCount,
+    }), data);
 }
