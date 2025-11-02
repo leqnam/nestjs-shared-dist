@@ -12,7 +12,7 @@ export declare class UtilsService {
     static getLocaleDate: (isoString: string, timeZone?: string) => string;
     static cleanNullObject: <T>(obj: any) => T;
     static isNullOrUndefined: (value: any) => boolean;
-    static transformEndOfDate(date: Date | string): Date;
+    static transformEndOfDate(date: Date | string): Date | null;
     static isFutureDate(value: any): boolean;
     static isActiveByDate(effectDate: Date, inactiveDate: Date): boolean;
     static base64Encode(text: string): string;

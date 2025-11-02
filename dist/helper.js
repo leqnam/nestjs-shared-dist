@@ -56,7 +56,7 @@ const getURL = (request) => {
 exports.getURL = getURL;
 function transformEndOfDate(date) {
     if (!date || date === 'null')
-        return new Date();
+        return null;
     const newDate = new Date(date);
     newDate.setHours(23, 59, 59, 999);
     return newDate;
@@ -114,6 +114,8 @@ const isNullable = (value) => {
 exports.isNullable = isNullable;
 function isFutureDate(value) {
     const futureDate = transformEndOfDate(new Date(value));
+    if (!futureDate)
+        return false;
     const currentDate = new Date();
     return futureDate.getTime() > currentDate.getTime();
 }

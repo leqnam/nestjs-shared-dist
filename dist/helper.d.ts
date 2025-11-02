@@ -12,7 +12,7 @@ export declare function extractKey(path: string): string;
 export declare const remove: <T>(arr: T[], predicate: (item: T) => boolean) => T[];
 export declare const getRequest: <T>(ctx: ExecutionContext | ArgumentsHost) => any;
 export declare const getURL: (request: Request) => string;
-export declare function transformEndOfDate(date: Date | string): Date;
+export declare function transformEndOfDate(date: Date | string): Date | null;
 export declare const randomString: (length?: number) => string;
 export declare function isDate(value: any): boolean;
 export declare function getTodayFormatYYYYDDMM(): string;

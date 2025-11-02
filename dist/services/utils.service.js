@@ -78,13 +78,15 @@ class UtilsService {
     }
     static transformEndOfDate(date) {
         if (!date || date === 'null')
-            return new Date();
+            return null;
         const newDate = new Date(date);
         newDate.setHours(23, 59, 59, 999);
         return newDate;
     }
     static isFutureDate(value) {
         const futureDate = this.transformEndOfDate(new Date(value));
+        if (!futureDate)
+            return false;
         const currentDate = new Date();
         return futureDate.getTime() > currentDate.getTime();
     }
