@@ -1,3 +1,20 @@
+
+<div align="center">
+
+# 🧩 @nready/nestjs-shared
+
+**Shared utility library for NestJS and Node.js microservice projects.**  
+Open-source and commercial-friendly under the **MIT License**.
+
+[![npm version](https://img.shields.io/npm/v/@nready/nestjs-shared.svg?style=flat-square)](https://www.npmjs.com/package/@nready/nestjs-shared)
+[![downloads](https://img.shields.io/npm/dm/@nready/nestjs-shared.svg?style=flat-square)](https://www.npmjs.com/package/@nready/nestjs-shared)
+[![license](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](./LICENSE)
+[![build](https://img.shields.io/github/actions/workflow/status/namle-dev/nready-shared/ci.yml?style=flat-square)](https://github.com/namle-dev/nready-shared/actions)
+
+</div>
+
+---
+
 # @nready/nestjs-shared
 
 ```
@@ -8,8 +25,15 @@ _  /|  / _  _, _/_  /___  _  ___ |  /_/ /_  /     _  /___  ___ |  /_/ /
 /_/ |_/  /_/ |_| /_____/  /_/  |_/_____/ /_/      /_____/_/  |_/_____/  
 ```
 
-## Description
-The lib `@nready/nestjs-shared` is used for Nest.js v10.0.0 project with pre-built some utilities function:
+## 📘 Overview
+
+`@nready/nestjs-shared` provides **lightweight, type-safe, and framework-agnostic utilities** for  
+NestJS-based microservice architectures — built to simplify development, testing, and scaling.
+
+> Designed for internal projects, but open for public and commercial use.
+
+---
+The lib `@nready/nestjs-shared` is used for Nest.js v10.x project with pre-built some utilities function:
   - [Usage](#usage)
   - [Features](#features)
     - [Message Queue](#message-queue)
@@ -30,7 +54,13 @@ First install the library with command:
 npm i @nready/nestjs-shared
 ```
 
-## Features
+## ✨ Features
+
+- 🧩 Shared **decorators**, **mappers**, and **interceptors**
+- 🔐 JWT, session, and permission helpers
+- 🧠 Dynamic DTO mapping engine
+- ⚙️ Utility functions for cross-service communication
+- 🪶 Zero dependencies, fully TypeScript-based
 
 ### Message Queue
 
@@ -167,6 +197,9 @@ async get(@Query(new QueryTransformPipe()) searchModel: MyEntitySearch) {
 ```
 
 In **Service**:
+There are 2 ways:
+- We can use `AbstractSearchService` all call the method `paginate(model)`:
+
 ```javascript
 import { AbstractSearchService, SearchResultDto } from '@nready/nestjs-shared';
 import { plainToInstance } from 'class-transformer';
@@ -181,6 +214,28 @@ export class MyService extends AbstractSearchService<MyEntity, MyEntitySearch> {
 
   public async query(model: MyEntitySearch): Promise<any> {
     const res = await this.paginate(model);
+    const data = plainToInstance(MyEntityResponseDto, res.data, { excludeExtraneousValues: true });
+    return new SearchResultDto<MyEntityResponseDto>(res.pageMeta, data);
+  }
+  ...
+```
+
+- or call directly the method `paginateRepository(repo: Repository<T>, model: S, defaultOrder?: FindOptionsOrder<T>)`:
+```javascript
+import { paginateRepository, SearchResultDto } from '@nready/nestjs-shared';
+import { plainToInstance } from 'class-transformer';
+
+@Injectable()
+export class MyService {
+  constructor(
+    @InjectRepository(MyEntitySearch) private readonly repository: Repository<MyEntitySearch>
+  ) {}
+
+  public async query(model: MyEntitySearch): Promise<any> {
+    const res = await paginateRepository<MyEntity, MyEntitySearch>(
+      this.repository as any,
+      model,
+    );
     const data = plainToInstance(MyEntityResponseDto, res.data, { excludeExtraneousValues: true });
     return new SearchResultDto<MyEntityResponseDto>(res.pageMeta, data);
   }
@@ -251,7 +306,7 @@ An example:
     - .randomString()
     - .transformEndOfDate(date: Date | string)
     
-  (tobe deprecated later)
+  (tobe deprecated)
   - extractKey(path: string)
   - transformEndOfDate(date: Date | string)
   - randomString(length = 60)
@@ -273,18 +328,18 @@ npm pack
 
 use in project with zip:
 ```bash
-npm install ../@nready/shared-0.0.1.tgz
+npm install ../@nready/nestjs-shared-0.0.1.tgz
 ```
 
 or using locally:
 ```bash
 # package.json
-"@nready/shared": "file:../libs/nestjs-shared",
+"@nready/nestjs-shared": "file:../libs/nestjs-shared",
 ```
 ### Use in project
 
 ```bash
-npm i @nready/shared
+npm i @nready/nestjs-shared
 ```
 
 
@@ -297,8 +352,14 @@ npm publish --access public
 
 <a href="/LICENSE" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 
-## Author
+Licensed under the MIT License
+.
+Copyright © 2025 Le Quoc Nam
 
-Le Quoc Nam, <leqnam@live.com (nam@nready.net)>
+This library is free for both personal and commercial use.
+No warranty provided; use at your own discretion.
 
+💡 Built and maintained by Le Quoc Nam, <leqnam@live.com (nam@nready.net)>
 https://nready.net/
+
+Open. Simple. Reusable.
