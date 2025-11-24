@@ -24,5 +24,11 @@ export declare function isFutureDate(value: any): boolean;
 export declare function isActiveByDate(effectDate: Date, inactiveDate: Date): boolean;
 type Queryable<T> = FindOptionsWhere<T>;
 export declare function buildQuery<T extends AbstractEntity, S extends AbstractSearchDto<T>>(model: S): Queryable<T>;
-export declare function paginateRepository<T extends AbstractEntity, S extends AbstractSearchDto<T>>(repo: Repository<T>, model: S, defaultOrder?: FindOptionsOrder<T>): Promise<SearchResultDto<T>>;
+export declare function buildSelect<T extends AbstractEntity>(repo: Repository<T>, excludeFields?: string[], relationsToInclude?: string[] | undefined, maxDepth?: number): any;
+export declare function paginateRepository<T extends AbstractEntity, S extends AbstractSearchDto<T>>(repo: Repository<T>, model: S, options?: {
+    defaultOrder?: FindOptionsOrder<T>;
+    relations?: string[];
+    withInactive?: boolean;
+    excludeFields?: string[];
+}): Promise<SearchResultDto<T>>;
 export {};
