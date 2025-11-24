@@ -25,6 +25,8 @@ _  /|  / _  _, _/_  /___  _  ___ |  /_/ /_  /     _  /___  ___ |  /_/ /
 /_/ |_/  /_/ |_| /_____/  /_/  |_/_____/ /_/      /_____/_/  |_/_____/  
 ```
 
+v0.0.6
+
 ## 📘 Overview
 
 `@nready/nestjs-shared` provides **lightweight, type-safe, and framework-agnostic utilities** for  
